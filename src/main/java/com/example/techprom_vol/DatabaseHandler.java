@@ -31,8 +31,8 @@ public class DatabaseHandler extends Configs {
     public void volRegistrationPanel(String fullName, String email, String password, String age, String sex, String phone) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         String insert = "INSERT INTO " + Constants.USER_TABLE + " (" +
                 Constants.USERS_FULL_NAME + "," + Constants.USERS_LOGIN_EMAIL + "," +
-                Constants.USERS_PASSWORD + "," + Constants.USERS_SEX + "," +
-                Constants.USERS_AGE + "," + Constants.USERS_PHONE + ")" + "VALUES(?,?,?,?,?,?)";
+                Constants.USERS_PASSWORD + "," + Constants.USERS_AGE + "," +
+                Constants.USERS_SEX + "," + Constants.USERS_PHONE + ")" + "VALUES(?,?,?,?,?,?)";
         PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
         preparedStatement.setString(1, fullName);
         preparedStatement.setString(2, email);
