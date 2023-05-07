@@ -15,7 +15,7 @@ public class DatabaseHandler extends Configs {
         try{
             String username = "root";
             String password = "12345";
-            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
+            Class.forName("com.mysql.jdbc.Driver").getDeclaredConstructor().newInstance();
             try (Connection dbConnection = DriverManager.getConnection(connectionString, username, password)){
                 successfulConnection = dbConnection;
                 System.out.println("Connection to Store DB successful!");
