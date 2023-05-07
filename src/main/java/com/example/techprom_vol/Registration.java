@@ -91,13 +91,15 @@ public class Registration{
                 ButtonController buttonController = new ButtonController();
                 buttonController.continueReg(continueButton);
 
+                DatabaseHandler databaseHandler = new DatabaseHandler();
+                try {
+                    databaseHandler.volRegistrationPanel1(fullName, emailLogin, password);
+                } catch (SQLException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
+                         InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
-        DatabaseHandler databaseHandler = new DatabaseHandler();
-        databaseHandler.volRegistrationPanel1(fullName, emailLogin, password);
-
-        ButtonController buttonController = new ButtonController();
-        buttonController.continueReg(continueButton);
     }
 
     GridPane createRegistrationFormPane() {
