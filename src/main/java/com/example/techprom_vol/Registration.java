@@ -8,6 +8,9 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Window;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+
 public class Registration{
 
     private String fullName;
@@ -26,7 +29,7 @@ public class Registration{
         return password;
     }
 
-    void sceneUIControls(GridPane gridPane) {
+    void sceneUIControls(GridPane gridPane) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Label headerLabel = new Label("Регистрация");
         headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         gridPane.add(headerLabel, 0,0,2,1);
@@ -80,15 +83,21 @@ public class Registration{
                     showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, заполните поле 'Пароль'!");
                     return;
                 }
+
                 fullName = nameField.getText();
                 emailLogin = emailField.getText();
                 password = passwordField.getText();
 
-                VolAccount volAccount = new VolAccount();
-                GridPane gridPane = volAccount.createVAPane();
-                Main.stage.setScene(new Scene(gridPane,800, 500));
+                ButtonController buttonController = new ButtonController();
+                buttonController.continueReg(continueButton);
+
             }
         });
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        databaseHandler.volRegistrationPanel1(fullName, emailLogin, password);
+
+        ButtonController buttonController = new ButtonController();
+        buttonController.continueReg(continueButton);
     }
 
     GridPane createRegistrationFormPane() {

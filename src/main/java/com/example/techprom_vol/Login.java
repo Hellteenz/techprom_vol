@@ -44,8 +44,7 @@ public class Login {
         GridPane.setMargin(loginButton, new Insets(20, 0,20,0));
 
         ButtonController buttonController = new ButtonController();
-
-
+        buttonController.toAccount(loginButton);
     }
 
     GridPane createStartPane() {

@@ -11,26 +11,35 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
-public class VolAccount {
+public class AdminAccount {
     @FXML
-    private Button btn_acc;
+    private Button btn_vol;
 
     @FXML
     private Button btn_event;
 
     @FXML
-    private Pane pane_acc;
+    private Button btn_activeEvent;
+
+    @FXML
+    private Pane pane_vol;
 
     @FXML
     private Pane pane_event;
 
     @FXML
+    private Pane pane_activeEvent;
+
+    @FXML
     private void handleButtonAction(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == btn_acc) {
-            pane_acc.toFront();
+        if (actionEvent.getSource() == btn_vol) {
+            pane_vol.toFront();
         }
         else if (actionEvent.getSource() == btn_event) {
             pane_event.toFront();
+        }
+        else if (actionEvent.getSource() == btn_activeEvent) {
+            pane_activeEvent.toFront();
         }
     }
 
