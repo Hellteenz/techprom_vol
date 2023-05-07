@@ -27,6 +27,9 @@ public class UserDataREG {
     public String sex;
     private String phone;
 
+    private String fullName = Registration.fullName;
+    private String emailLogin = Registration.emailLogin;
+    private String password = Registration.password;
     public String getPhone() {
         return phone;
     }
@@ -51,11 +54,11 @@ public class UserDataREG {
         sexLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
         gridPane.add(sexLabel, 0, 2);
 
-        RadioButton maleButton = new RadioButton("Мужской");
+        RadioButton maleButton = new RadioButton("Male");
         maleButton.setPrefHeight(10);
         gridPane.add(maleButton, 1, 2);
 
-        RadioButton femaleButton = new RadioButton("Женский");
+        RadioButton femaleButton = new RadioButton("Female");
         femaleButton.setPrefHeight(10);
         gridPane.add(femaleButton, 1, 3);
 
@@ -87,6 +90,7 @@ public class UserDataREG {
             public void changed(ObservableValue<? extends Toggle> changed, Toggle oldValue, Toggle newValue){
                 RadioButton selectedBtn = (RadioButton) newValue;
                 sex = selectedBtn.getText();
+                System.out.println(sex);
             }
         });
 
@@ -105,8 +109,16 @@ public class UserDataREG {
 
                 age = ageField.getText();
                 phone = phoneField.getText();
+
+                System.out.println(fullName);
+                System.out.println(emailLogin);
+                System.out.println(password);
+                System.out.println(age);
+                System.out.println(sex);
+                System.out.println(phone);
+
                 try {
-                    databaseHandler.volRegistrationPanel2(age, sex, phone);
+                    databaseHandler.volRegistrationPanel(fullName, emailLogin, password, sex, age, phone);
                 } catch (SQLException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
                          InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);

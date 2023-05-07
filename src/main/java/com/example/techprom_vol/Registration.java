@@ -13,21 +13,9 @@ import java.sql.SQLException;
 
 public class Registration{
 
-    private String fullName;
-
-    public String getFullName() {
-        return fullName;
-    }
-    private String emailLogin;
-
-    public String getEmailLogin() {
-        return emailLogin;
-    }
-    private String password;
-
-    public String getPassword() {
-        return password;
-    }
+    public static String fullName;
+    public static String emailLogin;
+    public static String password;
 
     void sceneUIControls(GridPane gridPane) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Label headerLabel = new Label("Регистрация");
@@ -90,14 +78,6 @@ public class Registration{
 
                 ButtonController buttonController = new ButtonController();
                 buttonController.continueReg(continueButton);
-
-                DatabaseHandler databaseHandler = new DatabaseHandler();
-                try {
-                    databaseHandler.volRegistrationPanel1(fullName, emailLogin, password);
-                } catch (SQLException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
-                         InstantiationException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
             }
         });
     }
