@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
 
 public class DatabaseHandler extends Configs {
 
@@ -42,5 +43,20 @@ public class DatabaseHandler extends Configs {
         preparedStatement.setString(6, phone);
 
         preparedStatement.executeUpdate();
+    }
+
+    public ResultSet getUser(User user) throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.USER_TABLE + " WHERE " + Constants.USERS_LOGIN_EMAIL
+                + " =? AND " + Constants.USERS_PASSWORD + " =?";
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        preparedStatement.setString(1, user.getLoginEmail());
+        preparedStatement.setString(2, user.getPassword());
+
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
     }
 }
