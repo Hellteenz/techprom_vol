@@ -1,12 +1,9 @@
 package com.example.techprom_vol;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.*;
-
-import java.io.IOException;
 
 public class Main extends Application {
     static Stage stage;

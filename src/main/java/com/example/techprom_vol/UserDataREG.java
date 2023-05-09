@@ -20,19 +20,11 @@ import java.sql.SQLException;
 
 public class UserDataREG {
     private String age;
-
-    public String getAge() {
-        return age;
-    }
     public String sex;
     private String phone;
-
     private String fullName = Registration.fullName;
     private String emailLogin = Registration.emailLogin;
     private String password = Registration.password;
-    public String getPhone() {
-        return phone;
-    }
 
     void sceneUIControls(GridPane gridPane) throws SQLException, ClassNotFoundException {
         Label headerLabel = new Label("Личные данные");
@@ -117,14 +109,9 @@ public class UserDataREG {
                 }
 
                 ButtonController buttonController = new ButtonController();
-                buttonController.toAccount(continueButton);
-
-
+                buttonController.toVolAccount(continueButton);
             }
         });
-
-        ButtonController buttonController = new ButtonController();
-        buttonController.toAccount(continueButton);
     }
 
     GridPane createUserDataREGPane() {

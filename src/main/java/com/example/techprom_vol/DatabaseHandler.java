@@ -59,4 +59,45 @@ public class DatabaseHandler extends Configs {
 
         return resultSet;
     }
+
+    public ResultSet getAdmin(User user) throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.ADMINS_TABLE + " WHERE " + Constants.ADMIN_EMAIL
+                + " =? AND " + Constants.ADMIN_PASSWORD + " =?";
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        preparedStatement.setString(1, user.getLoginEmail());
+        preparedStatement.setString(2, user.getPassword());
+
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
+
+    public void createEvent(String name, int minAge, int firstStaff, int secondStaff, String info) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        String insert = "INSERT INTO " + Constants.EVENTS_TABLE + " (" +
+                Constants.EVENT_NAME + "," + Constants.EVENT_MINAGE + "," +
+                Constants.EVENT_FSTAFF + "," + Constants.EVENT_SSTAFF + "," +
+                Constants.EVENT_INFO + ")" + "VALUES(?,?,?,?,?)";
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setInt(2, minAge);
+        preparedStatement.setInt(3, firstStaff);
+        preparedStatement.setInt(4, secondStaff);
+        preparedStatement.setString(5, info);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public ResultSet getAllVolunteers() throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.USER_TABLE;
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
 }

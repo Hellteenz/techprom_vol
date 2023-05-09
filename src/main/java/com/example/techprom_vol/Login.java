@@ -13,8 +13,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Window;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Login {
     public GridPane alertGridPane;
@@ -76,10 +82,31 @@ public class Login {
                 emailLogin = loginEmailField.getText();
                 password = passwordField.getText();
 
-                try {
-                    loginUser(emailLogin, password, loginButton);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                AdminAccount admAcc = new AdminAccount();
+                List<String> adminEmails = admAcc.getAdminEmail();
+                boolean check = Boolean.FALSE;
+                for (String login: adminEmails) {
+                    if (login.equals(emailLogin)) {
+                        check = Boolean.TRUE;
+                    }
+                }
+                if (check) {
+                    try {
+                        loginAdmin(emailLogin, password, loginButton);
+                    } catch (SQLException | NoSuchPaddingException | IllegalBlockSizeException |
+                             NoSuchAlgorithmException |
+                             BadPaddingException | InvalidKeyException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+
+                    try {
+                        loginUser(emailLogin, password, loginButton);
+                    } catch (SQLException | NoSuchPaddingException | IllegalBlockSizeException |
+                             NoSuchAlgorithmException |
+                             BadPaddingException | InvalidKeyException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -95,11 +122,12 @@ public class Login {
         );
     }
 
-    public void loginUser(String loginEmail, String password, Button loginButton) throws SQLException {
+    public void loginUser(String loginEmail, String password, Button loginButton) throws SQLException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         DatabaseHandler dbHandler = new DatabaseHandler();
         User user = new User();
+        AES aes = new AES();
         user.setLoginEmail(loginEmail);
-        user.setPassword(password);
+        user.setPassword(aes.cipher(password));
         ResultSet resultSet = dbHandler.getUser(user);
 
         int cnt = 0;
@@ -108,9 +136,32 @@ public class Login {
         }
 
         if (cnt > 0) {
-            System.out.println("Users found: " + cnt);
             ButtonController buttonController = new ButtonController();
-            buttonController.toAccount(loginButton);
+            buttonController.toVolAccount(loginButton);
+        }
+        else {
+            showAlert(Alert.AlertType.ERROR, alertGridPane.getScene().getWindow(), "Login Error!",
+                    "Пожалуйста, проверьте правильность данных. Если Вы не были зарегистрированны" +
+                            ", вернитесь и пройдите eё.");
+        }
+    }
+
+    public void loginAdmin(String loginEmail, String password, Button loginButton) throws SQLException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        User user = new User();
+        user.setLoginEmail(loginEmail);
+        user.setPassword(password);
+        ResultSet resultSet = dbHandler.getAdmin(user);
+
+        int cnt = 0;
+        while (resultSet.next()) {
+            cnt++;
+        }
+
+        if (cnt > 0) {
+            ButtonController buttonController = new ButtonController();
+            buttonController.toAdmAccount(loginButton);
+
         }
         else {
             showAlert(Alert.AlertType.ERROR, alertGridPane.getScene().getWindow(), "Login Error!",

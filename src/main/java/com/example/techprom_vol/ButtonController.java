@@ -58,13 +58,28 @@ public class ButtonController {
         });
     }
 
-    public void toAccount(Button button){
-
-        //ПРОПИСАТЬ УСЛОВИЕ РАБОТЫ С БД ДЛЯ АВТОРИЗАЦИИ ОРГАНИЗАЦИИ
+    public void toVolAccount(Button button){
         button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("VolAccount.fxml"));
+                Scene scene = null;
+                try {
+                    scene = new Scene(fxmlLoader.load(), 800, 500);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Main.stage.setScene(scene);
+                Main.stage.show();
+            }
+        });
+    }
+
+    public void toAdmAccount(Button button){
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("AdminAccount.fxml"));
                 Scene scene = null;
                 try {
                     scene = new Scene(fxmlLoader.load(), 800, 500);

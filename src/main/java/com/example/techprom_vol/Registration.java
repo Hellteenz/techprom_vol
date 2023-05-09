@@ -8,7 +8,12 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Window;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.lang.reflect.InvocationTargetException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 public class Registration{
@@ -71,10 +76,16 @@ public class Registration{
                     showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, заполните поле 'Пароль'!");
                     return;
                 }
+                AES aes = new AES();
 
                 fullName = nameField.getText();
                 emailLogin = emailField.getText();
-                password = passwordField.getText();
+                try {
+                    password = aes.cipher(passwordField.getText());
+                } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
+                         IllegalBlockSizeException | BadPaddingException e) {
+                    throw new RuntimeException(e);
+                }
 
                 ButtonController buttonController = new ButtonController();
                 buttonController.continueReg(continueButton);
