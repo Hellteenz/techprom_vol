@@ -114,6 +114,7 @@ public class AdminAccount extends Constants {
     public List<String> getAdminEmail() {
         List<String> emails = new ArrayList<>();
         emails.add("test@admin");
+        emails.add("1");
 
         return emails;
     }
