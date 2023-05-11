@@ -23,7 +23,6 @@ public class DatabaseHandler extends Configs {
             } catch (Exception ignored) {}
         } catch(Exception ex){
             System.out.println("Connection failed...");
-            System.out.println(ex);
         }
 
         return successfulConnection;
@@ -99,5 +98,40 @@ public class DatabaseHandler extends Configs {
         resultSet = preparedStatement.executeQuery();
 
         return resultSet;
+    }
+
+    public void addVolData(String fullName, String age, String sex, String email, String phone) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        String insert = "INSERT INTO " + Constants.DATA_TABLE + " (" +
+                Constants.DATA_NAME + "," + Constants.DATA_AGE + "," +
+                Constants.DATA_SEX + "," + Constants.DATA_EMAIL + "," +
+                Constants.DATA_PHONE + ")" + "VALUES(?,?,?,?,?)";
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
+        preparedStatement.setString(1, fullName);
+        preparedStatement.setString(2, age);
+        preparedStatement.setString(3, sex);
+        preparedStatement.setString(4, email);
+        preparedStatement.setString(5, phone);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public ResultSet getVolData() throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.DATA_TABLE;
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
+
+    public void deleteVolData() throws SQLException {
+
+        String select = "DELETE FROM " + Constants.DATA_TABLE;
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        preparedStatement.executeUpdate();
+
     }
 }

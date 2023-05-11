@@ -2,31 +2,38 @@ package com.example.techprom_vol;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class VolAccount {
-    @FXML
-    private Button btn_acc;
+    @FXML private Button btn_acc;
+    @FXML private Button btn_event;
+
+    @FXML private Pane pane_acc;
+    @FXML private Pane pane_event;
+
+    @FXML private Label label_name;
+    @FXML private Label label_sex;
+    @FXML private Label label_age;
+    @FXML private Label label_email;
+    @FXML private Label label_phone;
+
+
+    public String name;
+    public String age;
+    public String sex;
+    public String email;
+    public String phone;
+
 
     @FXML
-    private Button btn_event;
-
-    @FXML
-    private Pane pane_acc;
-
-    @FXML
-    private Pane pane_event;
-
-    @FXML
-    private void handleButtonAction(ActionEvent actionEvent) {
+    private void handleButtonAction(ActionEvent actionEvent) throws SQLException {
         if (actionEvent.getSource() == btn_acc) {
+            setLabelText();
             pane_acc.toFront();
         }
         else if (actionEvent.getSource() == btn_event) {
@@ -34,20 +41,24 @@ public class VolAccount {
         }
     }
 
+    public void setLabelText() throws SQLException {
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        ResultSet resultSet = databaseHandler.getVolData();
 
-    GridPane createVAPane() {
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(40, 40, 40, 40));
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
-        columnOneConstraints.setHalignment(HPos.RIGHT);
-        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
-        columnTwoConstrains.setHgrow(Priority.ALWAYS);
+        while (resultSet.next()) {
+            name = resultSet.getString(2);
+            age = resultSet.getString(3);
+            sex = resultSet.getString(4);
+            email = resultSet.getString(5);
+            phone = resultSet.getString(6);
+        }
 
-        gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
+        databaseHandler.deleteVolData();
 
-        return gridPane;
+        label_name.setText(name);
+        label_age.setText(age);
+        label_sex.setText(sex);
+        label_email.setText(email);
+        label_phone.setText(phone);
     }
 }
