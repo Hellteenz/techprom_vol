@@ -16,6 +16,7 @@ import javafx.stage.Window;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
@@ -88,6 +89,7 @@ public class Login {
                 for (String login: adminEmails) {
                     if (login.equals(emailLogin)) {
                         check = Boolean.TRUE;
+                        break;
                     }
                 }
                 if (check) {
@@ -103,8 +105,9 @@ public class Login {
                     try {
                         loginUser(emailLogin, password, loginButton);
                     } catch (SQLException | NoSuchPaddingException | IllegalBlockSizeException |
-                             NoSuchAlgorithmException |
-                             BadPaddingException | InvalidKeyException e) {
+                             NoSuchAlgorithmException | BadPaddingException | InvalidKeyException |
+                             ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
+                             InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -122,7 +125,7 @@ public class Login {
         );
     }
 
-    public void loginUser(String loginEmail, String password, Button loginButton) throws SQLException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public void loginUser(String loginEmail, String password, Button loginButton) throws SQLException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         DatabaseHandler dbHandler = new DatabaseHandler();
         User user = new User();
         AES aes = new AES();
@@ -133,9 +136,15 @@ public class Login {
         int cnt = 0;
         while (resultSet.next()) {
             cnt++;
+            user.setFullname(resultSet.getString(2));
+            user.setAge(resultSet.getString(6));
+            user.setSex(resultSet.getString(5));
+            user.setPhone(resultSet.getString(7));
         }
 
         if (cnt > 0) {
+            dbHandler.addVolData(user.getFullname(), user.getAge(), user.getSex(), user.getLoginEmail(),
+                    user.getPhone());
             ButtonController buttonController = new ButtonController();
             buttonController.toVolAccount(loginButton);
         }

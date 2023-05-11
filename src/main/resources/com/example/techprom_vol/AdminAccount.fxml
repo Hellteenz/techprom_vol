@@ -7,6 +7,8 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
@@ -112,11 +114,16 @@
                   <DropShadow />
                </effect>
                <children>
-                  <Label layoutX="120.0" layoutY="238.0" text="Добро    пожаловать!">
+                  <Label layoutX="123.0" layoutY="123.0" text="Добро пожаловать!">
                      <font>
-                        <Font name="Yu Mincho Demibold" size="25.0" />
+                        <Font name="Century" size="47.0" />
                      </font>
                   </Label>
+                  <ImageView fitHeight="214.0" fitWidth="245.0" layoutX="205.0" layoutY="222.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="file:/C:/Users/krist_eol1x01/IdeaProjects/techprom_vol/src/image/kitten.jpg" />
+                     </image>
+                  </ImageView>
                </children>
             </Pane>
             </children>

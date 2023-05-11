@@ -1,7 +1,5 @@
 package com.example.techprom_vol;
 
-import javafx.scene.layout.Pane;
-
 public class Constants {
     public static final String USER_TABLE = "users";
     public static final String USERS_FULL_NAME = "user_fullname";
@@ -21,5 +19,12 @@ public class Constants {
     public static final String EVENT_FSTAFF = "event_firstStaff";
     public static final String EVENT_SSTAFF = "event_secondStaff";
     public static final String EVENT_INFO = "event_info";
+
+    public static final String DATA_TABLE = "data_for_vol_acc";
+    public static final String DATA_NAME = "vol_name";
+    public static final String DATA_AGE = "vol_age";
+    public static final String DATA_SEX = "vol_sex";
+    public static final String DATA_EMAIL = "vol_email";
+    public static final String DATA_PHONE = "vol_phone";
 
 }

@@ -22,9 +22,9 @@ public class UserDataREG {
     private String age;
     public String sex;
     private String phone;
-    private String fullName = Registration.fullName;
-    private String emailLogin = Registration.emailLogin;
-    private String password = Registration.password;
+    private final String fullName = Registration.fullName;
+    private final String emailLogin = Registration.emailLogin;
+    private final String password = Registration.password;
 
     void sceneUIControls(GridPane gridPane) throws SQLException, ClassNotFoundException {
         Label headerLabel = new Label("Личные данные");
@@ -103,6 +103,7 @@ public class UserDataREG {
 
                 try {
                     databaseHandler.volRegistrationPanel(fullName, emailLogin, password, sex, age, phone);
+                    databaseHandler.addVolData(fullName, age, sex, emailLogin, phone);
                 } catch (SQLException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
                          InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
