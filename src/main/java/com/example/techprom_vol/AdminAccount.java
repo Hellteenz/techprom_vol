@@ -1,5 +1,7 @@
 package com.example.techprom_vol;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AdminAccount extends Constants {
@@ -21,6 +24,7 @@ public class AdminAccount extends Constants {
     @FXML private Button toCreateNewEvent;
     @FXML private Button end_forCreateNewEvent_btn;
     @FXML private Button btn_table_update;
+    @FXML private Button btn_updateActiveEvent;
 
     @FXML private Pane pane_vol;
     @FXML private Pane pane_event;
@@ -41,8 +45,33 @@ public class AdminAccount extends Constants {
     @FXML private TableColumn<User, String> column_email;
     @FXML private TableColumn<User, String> column_phone;
 
+    @FXML private TableView<User> table_firstStaff;
+    @FXML private TableColumn<User, String> column_fs_name;
+    @FXML private TableColumn<User, String> column_fs_age;
+    @FXML private TableColumn<User, String> column_fs_email;
+    @FXML private TableColumn<User, String> column_fs_phone;
 
-    private ObservableList<User> volData = FXCollections.observableArrayList();
+    @FXML private TableView<User> table_secondStaff;
+    @FXML private TableColumn<User, String> column_ss_name;
+    @FXML private TableColumn<User, String> column_ss_age;
+    @FXML private TableColumn<User, String> column_ss_email;
+    @FXML private TableColumn<User, String> column_ss_phone;
+
+    @FXML private TableView<EventForm> table_eventActive;
+    @FXML private TableColumn<EventForm, String> column_eventA;
+
+    public String currentEvent;
+    public String eventName;
+    public int minAge;
+    public String info;
+    public int firstStaff;
+    public int secondStaff;
+
+
+    private ObservableList<User> volDataAllVol = FXCollections.observableArrayList();
+    private ObservableList<User> volDataFS = FXCollections.observableArrayList();
+    private ObservableList<User> volDataSS = FXCollections.observableArrayList();
+    private ObservableList<EventForm> activeEvents = FXCollections.observableArrayList();
 
 
     @FXML
@@ -55,33 +84,38 @@ public class AdminAccount extends Constants {
         }
         else if (actionEvent.getSource() == btn_activeEvent) {
             pane_activeEvent.toFront();
-        }
-        else if (actionEvent.getSource() == toCreateNewEvent) {
+        } else if (actionEvent.getSource() == btn_updateActiveEvent) {
+            for ( int i = 0; i < table_eventActive.getItems().size(); i++) {
+                table_eventActive.getItems().clear();
+            }
+            DatabaseHandler databaseHandler = new DatabaseHandler();
+            makeTableActiveEvent();
+            TableView.TableViewSelectionModel<EventForm> selectionModel = table_eventActive.getSelectionModel();
+            selectionModel.selectedItemProperty().addListener(new ChangeListener<EventForm>() {
+                @Override
+                public void changed(ObservableValue<? extends EventForm> observable, EventForm oldValue, EventForm newValue) {
+                    try {
+                        currentEvent = newValue.getT_eventName();
+                        getEventInform(databaseHandler, currentEvent);
+                        makeTableStaff(currentEvent, firstStaff, secondStaff);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        } else if (actionEvent.getSource() == toCreateNewEvent) {
             pane_createNewEvent.toFront();
         }
         else if (actionEvent.getSource() == btn_table_update){
-            DatabaseHandler dbHandler = new DatabaseHandler();
-            ResultSet resultSet = dbHandler.getAllVolunteers();
-
-            while (resultSet.next()) {
-                String fullName = resultSet.getString(Constants.USERS_FULL_NAME);
-                String age = resultSet.getString(Constants.USERS_AGE);
-                String email = resultSet.getString(Constants.USERS_LOGIN_EMAIL);
-                String phone = resultSet.getString(Constants.USERS_PHONE);
-
-                volData.add(new User(fullName, age, email, phone));
+            for ( int i = 0; i < vol_table.getItems().size(); i++) {
+                vol_table.getItems().clear();
             }
-            column_fullName.setCellValueFactory(cellData -> cellData.getValue().t_fullNameProperty());
-            column_age.setCellValueFactory(cellData -> cellData.getValue().t_ageProperty());
-            column_email.setCellValueFactory(cellData -> cellData.getValue().t_emailProperty());
-            column_phone.setCellValueFactory(cellData -> cellData.getValue().t_phoneProperty());
-
-            vol_table.setItems(volData);
+            makeTableAllVol();
         }
         else if (actionEvent.getSource() == end_forCreateNewEvent_btn) {
             AnchorPane alertGridPane = anchorPane_full;
             showAlert(Alert.AlertType.INFORMATION, alertGridPane.getScene().getWindow(), "Success!",
-                    "Мероприятие усешно создано!");
+                    "Мероприятие успешно создано!");
             DatabaseHandler databaseHandler = new DatabaseHandler();
 
             EventForm newEvent = new EventForm();
@@ -102,6 +136,97 @@ public class AdminAccount extends Constants {
         }
     }
 
+    public void makeTableAllVol() throws SQLException {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        ResultSet resultSet = dbHandler.getAllVolunteers();
+
+        while (resultSet.next()) {
+            String fullName = resultSet.getString(Constants.USERS_FULL_NAME);
+            String age = resultSet.getString(Constants.USERS_AGE);
+            String email = resultSet.getString(Constants.USERS_LOGIN_EMAIL);
+            String phone = resultSet.getString(Constants.USERS_PHONE);
+
+            volDataAllVol.add(new User(fullName, age, email, phone));
+        }
+        column_fullName.setCellValueFactory(cellData -> cellData.getValue().t_fullNameProperty());
+        column_age.setCellValueFactory(cellData -> cellData.getValue().t_ageProperty());
+        column_email.setCellValueFactory(cellData -> cellData.getValue().t_emailProperty());
+        column_phone.setCellValueFactory(cellData -> cellData.getValue().t_phoneProperty());
+
+        vol_table.setItems(volDataAllVol);
+    }
+
+    public void makeTableActiveEvent() throws SQLException {
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        ResultSet resultSet = databaseHandler.getAllEvents();
+
+        while (resultSet.next()) {
+            String eventName = resultSet.getString(Constants.EVENT_NAME);
+            int minAge = resultSet.getInt(Constants.EVENT_MINAGE);
+            String info = resultSet.getString(Constants.EVENT_INFO);
+            int firstStaff = resultSet.getInt(Constants.EVENT_FSTAFF);
+            int secondStaff = resultSet.getInt(Constants.EVENT_SSTAFF);
+
+            activeEvents.add(new EventForm(eventName, minAge, info, firstStaff, secondStaff));
+        }
+        column_eventA.setCellValueFactory(cellData -> cellData.getValue().t_eventNameProperty());
+
+        table_eventActive.setItems(activeEvents);
+    }
+
+    public void makeTableStaff(String currentEvent, int firstStaff, int secondStaff) throws SQLException {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        ResultSet resultSet = dbHandler.getAllVolunteers();
+        ResultSet resSet = dbHandler.getVolunteer(currentEvent);
+
+        String strVolEmailForCurrentEvent = "";
+        int cntRightVol = 0;
+
+        while (resSet.next()) {
+            String email = resSet.getString(Constants.APPLICATION_VOLUNTEER_EMAIL);
+            strVolEmailForCurrentEvent += (email + " ");
+        }
+        List<String> emailForCurrentEvent = Arrays.stream(strVolEmailForCurrentEvent.split(" ")).toList();
+
+        while (resultSet.next()) {
+            String fullName = resultSet.getString(Constants.USERS_FULL_NAME);
+            String age = resultSet.getString(Constants.USERS_AGE);
+            String email = resultSet.getString(Constants.USERS_LOGIN_EMAIL);
+            String phone = resultSet.getString(Constants.USERS_PHONE);
+
+            if (emailForCurrentEvent.contains(email) && cntRightVol <= firstStaff - 1) {
+                volDataFS.add(new User(fullName, age, email, phone));
+                cntRightVol++;
+            } else if (emailForCurrentEvent.contains(email) && cntRightVol <= firstStaff  + secondStaff - 1) {
+                volDataSS.add(new User(fullName, age, email, phone));
+            }
+        }
+        column_fs_name.setCellValueFactory(cellData -> cellData.getValue().fs_fullNameProperty());
+        column_fs_age.setCellValueFactory(cellData -> cellData.getValue().fs_ageProperty());
+        column_fs_email.setCellValueFactory(cellData -> cellData.getValue().fs_emailProperty());
+        column_fs_phone.setCellValueFactory(cellData -> cellData.getValue().fs_phoneProperty());
+
+        column_ss_name.setCellValueFactory(cellData -> cellData.getValue().ss_fullNameProperty());
+        column_ss_age.setCellValueFactory(cellData -> cellData.getValue().ss_ageProperty());
+        column_ss_email.setCellValueFactory(cellData -> cellData.getValue().ss_emailProperty());
+        column_ss_phone.setCellValueFactory(cellData -> cellData.getValue().ss_phoneProperty());
+
+        table_firstStaff.setItems(volDataFS);
+        table_secondStaff.setItems(volDataSS);
+    }
+
+    public void getEventInform(DatabaseHandler databaseHandler, String nameEvent) throws SQLException {
+        ResultSet resultSet = databaseHandler.getEvent(nameEvent);
+
+        while (resultSet.next()) {
+            eventName = resultSet.getString(Constants.EVENT_NAME);
+            minAge = resultSet.getInt(Constants.EVENT_MINAGE);
+            info = resultSet.getString(Constants.EVENT_INFO);
+            firstStaff = resultSet.getInt(Constants.EVENT_FSTAFF);
+            secondStaff = resultSet.getInt(Constants.EVENT_SSTAFF);
+        }
+    }
+
     private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -118,4 +243,5 @@ public class AdminAccount extends Constants {
 
         return emails;
     }
+
 }

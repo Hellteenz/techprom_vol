@@ -143,11 +143,11 @@ public class Login {
         }
 
         if (cnt > 0) {
+            dbHandler.deleteVolData();
             dbHandler.addVolData(user.getFullname(), user.getAge(), user.getSex(), user.getLoginEmail(),
                     user.getPhone());
             ButtonController buttonController = new ButtonController();
             buttonController.toVolAccount(loginButton);
-            dbHandler.deleteVolData();
         }
         else {
             showAlert(Alert.AlertType.ERROR, alertGridPane.getScene().getWindow(), "Login Error!",

@@ -27,4 +27,8 @@ public class Constants {
     public static final String DATA_EMAIL = "vol_email";
     public static final String DATA_PHONE = "vol_phone";
 
+    public static final String APPLICATION_TABLE = "application";
+    public static final String APPLICATION_VOLUNTEER_EMAIL = "app_vol";
+    public static final String APPLICATION_EVENT_NAME = "app_eventName";
+
 }

@@ -88,11 +88,6 @@
                   <Button fx:id="toCreateNewEvent" layoutX="242.0" layoutY="314.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="30.0" prefWidth="174.0" text="Создать новое мероприятие" />
                </children>
                 </Pane>
-            <Pane fx:id="pane_activeEvent" layoutX="143.0" prefHeight="504.0" prefWidth="655.0" style="-fx-background-color: #FFF0F5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-6.0">
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Pane>
                 <Pane fx:id="pane_vol" layoutX="145.0" layoutY="-6.0" prefHeight="500.0" prefWidth="550.0" style="-fx-background-color: #E0FFFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-6.0">
                     <effect>
                         <DropShadow />
@@ -107,6 +102,45 @@
                     </columns>
                   </TableView>
                   <Button fx:id="btn_table_update" layoutX="259.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="145.0" text="Обновить" />
+               </children>
+            </Pane>
+            <Pane fx:id="pane_activeEvent" layoutX="143.0" prefHeight="504.0" prefWidth="655.0" style="-fx-background-color: #FFF0F5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-6.0">
+               <effect>
+                  <DropShadow />
+               </effect>
+               <children>
+                  <TableView fx:id="table_eventActive" layoutX="26.0" layoutY="54.0" onSort="#handleButtonAction" prefHeight="438.0" prefWidth="136.0">
+                    <columns>
+                      <TableColumn fx:id="column_eventA" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="134.66665649414062" text="Мероприятия" />
+                    </columns>
+                  </TableView>
+                  <TableView fx:id="table_firstStaff" layoutX="189.0" layoutY="54.0" onSort="#handleButtonAction" prefHeight="251.0" prefWidth="439.0">
+                     <columns>
+                        <TableColumn fx:id="column_fs_name" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="140.0" text="Имя" />
+                        <TableColumn fx:id="column_fs_age" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="62.0" text="Возраст" />
+                        <TableColumn fx:id="column_fs_email" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="122.0" text="Почта" />
+                        <TableColumn fx:id="column_fs_phone" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="115.33331298828125" text="Телефон" />
+                     </columns>
+                  </TableView>
+                  <TableView fx:id="table_secondStaff" layoutX="189.0" layoutY="342.0" prefHeight="150.0" prefWidth="439.0">
+                     <columns>
+                        <TableColumn fx:id="column_ss_name" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="140.0" text="Имя" />
+                        <TableColumn fx:id="column_ss_age" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="62.0" text="Возраст" />
+                        <TableColumn fx:id="column_ss_email" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="122.0" text="Почта" />
+                        <TableColumn fx:id="column_ss_phone" onEditCommit="#handleButtonAction" onEditStart="#handleButtonAction" prefWidth="115.33331298828125" text="Телефон" />
+                     </columns>
+                  </TableView>
+                  <Text layoutX="335.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Основной состав:">
+                     <font>
+                        <Font name="Century" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="329.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Резервный состав:">
+                     <font>
+                        <Font name="Century" size="18.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="btn_updateActiveEvent" layoutX="32.0" layoutY="22.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="125.0" text="Обновить" />
                </children>
             </Pane>
             <Pane fx:id="default_pane" layoutX="145.0" layoutY="-1.0" prefHeight="504.0" prefWidth="663.0" style="-fx-background-color: #FFF0F5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-6.0">

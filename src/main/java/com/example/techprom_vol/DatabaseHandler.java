@@ -134,4 +134,53 @@ public class DatabaseHandler extends Configs {
         preparedStatement.executeUpdate();
 
     }
+
+    public ResultSet getAllEvents() throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.EVENTS_TABLE;
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
+
+    public ResultSet getEvent(String name) throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.EVENTS_TABLE + " WHERE " + Constants.EVENT_NAME + " =?";
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        preparedStatement.setString(1, name);
+
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
+
+    public ResultSet getVolunteer(String currentEvent) throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.APPLICATION_TABLE + " WHERE " + Constants.APPLICATION_EVENT_NAME + " =?";
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        preparedStatement.setString(1, currentEvent);
+
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
+
+    public void sendApplication(String volEmail, String eventName) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        String insert = "INSERT INTO " + Constants.APPLICATION_TABLE + " (" +
+                Constants.APPLICATION_VOLUNTEER_EMAIL + "," + Constants.APPLICATION_EVENT_NAME
+                + ")" + "VALUES(?,?)";
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
+        preparedStatement.setString(1, volEmail);
+        preparedStatement.setString(2, eventName);
+
+        preparedStatement.executeUpdate();
+    }
+
 }
