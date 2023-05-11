@@ -147,6 +147,7 @@ public class Login {
                     user.getPhone());
             ButtonController buttonController = new ButtonController();
             buttonController.toVolAccount(loginButton);
+            dbHandler.deleteVolData();
         }
         else {
             showAlert(Alert.AlertType.ERROR, alertGridPane.getScene().getWindow(), "Login Error!",

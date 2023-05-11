@@ -104,6 +104,7 @@ public class UserDataREG {
                 try {
                     databaseHandler.volRegistrationPanel(fullName, emailLogin, password, sex, age, phone);
                     databaseHandler.addVolData(fullName, age, sex, emailLogin, phone);
+                    databaseHandler.deleteVolData();
                 } catch (SQLException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
                          InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
