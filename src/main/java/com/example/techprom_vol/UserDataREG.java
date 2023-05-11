@@ -17,6 +17,8 @@ import javafx.stage.Window;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserDataREG {
     private String age;
@@ -88,13 +90,13 @@ public class UserDataREG {
         continueButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (ageField.getText().isEmpty()) {
-                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, заполните поле 'Дата рождения'!");
+                if (ageField.getText().isEmpty() || !ageRegex(ageField.getText())) {
+                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, проверьте корректность данных поля 'Дата рождения'!");
                     return;
                 }
 
-                if (phoneField.getText().isEmpty()) {
-                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, заполните поле 'Телефон'!");
+                if (phoneField.getText().isEmpty() || !phoneRegex(phoneField.getText())) {
+                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, проверьте корректность данных поля 'Телефон'!");
                     return;
                 }
 
@@ -139,5 +141,19 @@ public class UserDataREG {
         alert.setContentText(message);
         alert.initOwner(owner);
         alert.show();
+    }
+
+    public boolean ageRegex(String age) {
+        String regex = "^(0?[1-9]|[12][0-9]|3[01])\\.(0?[1-9]|1[012])\\.((19|20)\\d\\d)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(age);
+        return matcher.matches();
+    }
+
+    public boolean phoneRegex(String phone) {
+        String regex = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{11}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(phone);
+        return matcher.matches();
     }
 }

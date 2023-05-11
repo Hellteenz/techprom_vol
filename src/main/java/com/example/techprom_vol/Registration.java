@@ -15,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Registration{
 
@@ -64,16 +66,16 @@ public class Registration{
         continueButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (nameField.getText().isEmpty()) {
-                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, заполните поле 'ФИО'!");
+                if (nameField.getText().isEmpty() || !nameRegex(nameField.getText())) {
+                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, проверьте корректность данных поля 'ФИО'!");
                     return;
                 }
-                if (emailField.getText().isEmpty()) {
-                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, заполните поле 'Email'!");
+                if (emailField.getText().isEmpty() || !emailRegex(emailField.getText())) {
+                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, проверьте корректность данных поля 'Email'!");
                     return;
                 }
                 if (passwordField.getText().isEmpty()) {
-                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, заполните поле 'Пароль'!");
+                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Пожалуйста, проверьте корректность данных поля 'Пароль'!");
                     return;
                 }
                 AES aes = new AES();
@@ -116,5 +118,19 @@ public class Registration{
         alert.setContentText(message);
         alert.initOwner(owner);
         alert.show();
+    }
+
+    public boolean emailRegex(String emailLogin) {
+        String regex = "^[A-z0-9+_.-]+@[A-z0-9.-]+\\.[A-z]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(emailLogin);
+        return matcher.matches();
+    }
+
+    public boolean nameRegex(String name) {
+        String regex = "^[A-я]+ [A-я]+ [A-я]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
     }
 }
