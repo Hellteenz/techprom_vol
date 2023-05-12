@@ -197,8 +197,9 @@ public class AdminAccount extends Constants {
             if (emailForCurrentEvent.contains(email) && cntRightVol <= firstStaff - 1) {
                 volDataFS.add(new User(fullName, age, email, phone));
                 cntRightVol++;
-            } else if (emailForCurrentEvent.contains(email) && cntRightVol <= firstStaff  + secondStaff - 1) {
+            } else if (emailForCurrentEvent.contains(email) && cntRightVol <= (firstStaff  + secondStaff - 1)) {
                 volDataSS.add(new User(fullName, age, email, phone));
+                cntRightVol++;
             }
         }
         column_fs_name.setCellValueFactory(cellData -> cellData.getValue().fs_fullNameProperty());
