@@ -172,15 +172,56 @@ public class DatabaseHandler extends Configs {
         return resultSet;
     }
 
-    public void sendApplication(String volEmail, String eventName) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void sendApplication(String volEmail, String eventName, String status) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         String insert = "INSERT INTO " + Constants.APPLICATION_TABLE + " (" +
                 Constants.APPLICATION_VOLUNTEER_EMAIL + "," + Constants.APPLICATION_EVENT_NAME
-                + ")" + "VALUES(?,?)";
+                + "," + Constants.APPLICATION_STATUS + ")" + "VALUES(?,?,?)";
         PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
         preparedStatement.setString(1, volEmail);
         preparedStatement.setString(2, eventName);
+        preparedStatement.setString(3, status);
 
         preparedStatement.executeUpdate();
     }
 
+    public ResultSet getStatus(String currentEvent, String volEmail) throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.APPLICATION_TABLE + " WHERE " + Constants.APPLICATION_EVENT_NAME +
+                " =? AND " + Constants.APPLICATION_VOLUNTEER_EMAIL + " =?";
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        preparedStatement.setString(1, currentEvent);
+        preparedStatement.setString(2, volEmail);
+
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
+
+    public void setStatus(String currentEvent, String email, String newStatus) throws SQLException {
+
+        String set = "UPDATE " + Constants.APPLICATION_TABLE + " SET " + Constants.APPLICATION_STATUS +
+                " = '" + newStatus + "' WHERE " + Constants.APPLICATION_EVENT_NAME + " =? AND "
+                + Constants.APPLICATION_VOLUNTEER_EMAIL + " =?";
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(set);
+        preparedStatement.setString(1, currentEvent);
+        preparedStatement.setString(2, email);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public ResultSet getEmail(String volName) throws SQLException {
+        ResultSet resultSet = null;
+
+        String select = "SELECT * FROM " + Constants.USER_TABLE + " WHERE " + Constants.USERS_FULL_NAME +
+                " =?";
+
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        preparedStatement.setString(1, volName);
+
+        resultSet = preparedStatement.executeQuery();
+
+        return resultSet;
+    }
 }

@@ -30,5 +30,6 @@ public class Constants {
     public static final String APPLICATION_TABLE = "application";
     public static final String APPLICATION_VOLUNTEER_EMAIL = "app_vol";
     public static final String APPLICATION_EVENT_NAME = "app_eventName";
+    public static final String APPLICATION_STATUS = "app_status";
 
 }

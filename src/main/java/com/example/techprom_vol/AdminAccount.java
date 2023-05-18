@@ -6,16 +6,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Window;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminAccount extends Constants {
     @FXML private Button btn_vol;
@@ -25,12 +29,18 @@ public class AdminAccount extends Constants {
     @FXML private Button end_forCreateNewEvent_btn;
     @FXML private Button btn_table_update;
     @FXML private Button btn_updateActiveEvent;
+    @FXML private Button btn_exit;
+    @FXML private Button changeFS_btn;
+    @FXML private Button changeSS_btn;
 
     @FXML private Pane pane_vol;
     @FXML private Pane pane_event;
     @FXML private Pane pane_activeEvent;
     @FXML private Pane pane_createNewEvent;
     @FXML private Pane default_pane;
+    @FXML private Pane changeFS_pane;
+    @FXML private Pane changeSS_pane;
+    
     @FXML private AnchorPane anchorPane_full;
 
     @FXML private TextField event_name_field;
@@ -66,6 +76,7 @@ public class AdminAccount extends Constants {
     public String info;
     public int firstStaff;
     public int secondStaff;
+    public String currentVolName;
 
 
     private ObservableList<User> volDataAllVol = FXCollections.observableArrayList();
@@ -82,9 +93,14 @@ public class AdminAccount extends Constants {
         else if (actionEvent.getSource() == btn_event) {
             pane_event.toFront();
         }
+        else if (actionEvent.getSource() == btn_exit) {
+            ButtonController buttonController = new ButtonController();
+            buttonController.toLogin(btn_exit);
+        }
         else if (actionEvent.getSource() == btn_activeEvent) {
             pane_activeEvent.toFront();
-        } else if (actionEvent.getSource() == btn_updateActiveEvent) {
+        }
+        else if (actionEvent.getSource() == btn_updateActiveEvent) {
             for ( int i = 0; i < table_eventActive.getItems().size(); i++) {
                 table_eventActive.getItems().clear();
             }
@@ -103,7 +119,8 @@ public class AdminAccount extends Constants {
                     }
                 }
             });
-        } else if (actionEvent.getSource() == toCreateNewEvent) {
+        }
+        else if (actionEvent.getSource() == toCreateNewEvent) {
             pane_createNewEvent.toFront();
         }
         else if (actionEvent.getSource() == btn_table_update){
@@ -133,6 +150,8 @@ public class AdminAccount extends Constants {
                 throw new RuntimeException(e);
             }
             default_pane.toFront();
+        } else if (actionEvent.getSource() == changeFS_btn) {
+            btnReactionOnListener();
         }
     }
 
@@ -175,6 +194,8 @@ public class AdminAccount extends Constants {
     }
 
     public void makeTableStaff(String currentEvent, int firstStaff, int secondStaff) throws SQLException {
+        clearTable(table_firstStaff);
+        clearTable(table_secondStaff);
         DatabaseHandler dbHandler = new DatabaseHandler();
         ResultSet resultSet = dbHandler.getAllVolunteers();
         ResultSet resSet = dbHandler.getVolunteer(currentEvent);
@@ -194,12 +215,34 @@ public class AdminAccount extends Constants {
             String email = resultSet.getString(Constants.USERS_LOGIN_EMAIL);
             String phone = resultSet.getString(Constants.USERS_PHONE);
 
-            if (emailForCurrentEvent.contains(email) && cntRightVol <= firstStaff - 1) {
+            String status = getStatus(currentEvent, email, dbHandler);
+            if (Objects.equals(status, "first")) {
                 volDataFS.add(new User(fullName, age, email, phone));
+                dbHandler.setStatus(currentEvent, email, "first");
                 cntRightVol++;
-            } else if (emailForCurrentEvent.contains(email) && cntRightVol <= (firstStaff  + secondStaff - 1)) {
+            } else if (Objects.equals(status, "second")) {
                 volDataSS.add(new User(fullName, age, email, phone));
                 cntRightVol++;
+                dbHandler.setStatus(currentEvent, email, "second");
+            }
+        }
+        while (resultSet.next()) {
+            String fullName = resultSet.getString(Constants.USERS_FULL_NAME);
+            String age = resultSet.getString(Constants.USERS_AGE);
+            String email = resultSet.getString(Constants.USERS_LOGIN_EMAIL);
+            String phone = resultSet.getString(Constants.USERS_PHONE);
+
+            String status = getStatus(currentEvent, email, dbHandler);
+            if (emailForCurrentEvent.contains(email) && cntRightVol <= firstStaff - 1
+                    && Objects.equals(status, "commit")) {
+                volDataFS.add(new User(fullName, age, email, phone));
+                dbHandler.setStatus(currentEvent, email, "first");
+                cntRightVol++;
+            } else if (emailForCurrentEvent.contains(email) && cntRightVol <= (firstStaff  + secondStaff - 1)
+                    && Objects.equals(status, "commit")) {
+                volDataSS.add(new User(fullName, age, email, phone));
+                cntRightVol++;
+                dbHandler.setStatus(currentEvent, email, "second");
             }
         }
         column_fs_name.setCellValueFactory(cellData -> cellData.getValue().fs_fullNameProperty());
@@ -214,6 +257,52 @@ public class AdminAccount extends Constants {
 
         table_firstStaff.setItems(volDataFS);
         table_secondStaff.setItems(volDataSS);
+        listenerStaffTables(table_firstStaff);
+        listenerStaffTables(table_secondStaff);
+    }
+
+    public void clearTable(TableView<User> table) {
+        for ( int i = 0; i < table.getItems().size(); i++) {
+            table.getItems().clear();
+        }
+    }
+
+    public void listenerStaffTables(TableView<User> table) {
+        TableView.TableViewSelectionModel<User> selectionModel = table.getSelectionModel();
+        selectionModel.selectedItemProperty().addListener(new ChangeListener<User>() {
+            @Override
+            public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+                currentVolName = newValue.getT_fullName();
+                if (table == table_firstStaff) {
+                    changeFS_pane.toBack();
+                    changeSS_pane.toFront();
+                } else {
+                    changeSS_pane.toBack();
+                    changeFS_pane.toFront();
+                }
+            }
+        });
+    }
+
+    public void btnReactionOnListener() throws SQLException {
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        ResultSet resultSet = databaseHandler.getEmail(currentVolName);
+        String email = null;
+        while (resultSet.next()) {
+            email = resultSet.getString(Constants.USERS_LOGIN_EMAIL);
+        }
+        String status = getStatus(currentEvent, email, databaseHandler);
+        UpdateStaffTable updateStaffTable = new UpdateStaffTable(currentVolName, status);
+        updateStaffTable.createTable();
+    }
+
+    public String getStatus(String currentEvent, String volEmail, DatabaseHandler databaseHandler) throws SQLException {
+        ResultSet resultSet = databaseHandler.getStatus(currentEvent, volEmail);
+        String status = null;
+        while (resultSet.next()) {
+            status = resultSet.getString(Constants.APPLICATION_STATUS);
+        }
+        return status;
     }
 
     public void getEventInform(DatabaseHandler databaseHandler, String nameEvent) throws SQLException {

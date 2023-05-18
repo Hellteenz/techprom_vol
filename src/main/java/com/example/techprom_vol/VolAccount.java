@@ -22,6 +22,7 @@ public class VolAccount {
     @FXML private Button btn_event;
     @FXML private Button btn_update_eventTable;
     @FXML private Button btn_sendApplication;
+    @FXML private Button btn_exit;
 
     @FXML private Pane pane_acc;
     @FXML private Pane pane_event;
@@ -62,6 +63,10 @@ public class VolAccount {
             setLabelText(databaseHandler);
             pane_acc.toFront();
         }
+        else if (actionEvent.getSource() == btn_exit) {
+            ButtonController buttonController = new ButtonController();
+            buttonController.toLogin(btn_exit);
+        }
         else if (actionEvent.getSource() == btn_event) {
             pane_event.toFront();
         }
@@ -91,9 +96,15 @@ public class VolAccount {
             setLabelText(dbHandler);
             getEventInform(dbHandler, currentEvent);
             String[] ageSplit = age.trim().split("\\.");
-            if (ageFromBirth(Integer.parseInt(ageSplit[2]), Integer.parseInt(ageSplit[1]),
+            if (checkingApplication(eventName, email)) {
+                AnchorPane alertGridPane = anchor_full;
+                showAlert(Alert.AlertType.ERROR, alertGridPane.getScene().getWindow(), "Error!",
+                        "Вы уже подавали заявку на это мероприятие!");
+            }
+            else if (ageFromBirth(Integer.parseInt(ageSplit[2]), Integer.parseInt(ageSplit[1]),
                     Integer.parseInt(ageSplit[0])) >= minAge) {
-                dbHandler.sendApplication(email, eventName);
+                String status = "commit";
+                dbHandler.sendApplication(email, eventName, status);
                 AnchorPane alertGridPane = anchor_full;
                 showAlert(Alert.AlertType.INFORMATION, alertGridPane.getScene().getWindow(), "Success!",
                         "Заявка успешно подана!");
@@ -133,6 +144,9 @@ public class VolAccount {
     }
 
     public void makeTable(DatabaseHandler databaseHandler) throws SQLException {
+        for ( int i = 0; i < eventTable.getItems().size(); i++) {
+            eventTable.getItems().clear();
+        }
         ResultSet resultSet = databaseHandler.getAllEvents();
 
         while (resultSet.next()) {
@@ -177,9 +191,22 @@ public class VolAccount {
             info = resultSet.getString(Constants.EVENT_INFO);
             firstStaff = resultSet.getInt(Constants.EVENT_FSTAFF);
             secondStaff = resultSet.getInt(Constants.EVENT_SSTAFF);
-
         }
     }
+
+    public boolean checkingApplication(String currentEvent, String volEmail) throws SQLException {
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        ResultSet resultSet = databaseHandler.getVolunteer(currentEvent);
+
+        while (resultSet.next()) {
+            String volEmailDB = resultSet.getString(Constants.APPLICATION_VOLUNTEER_EMAIL);
+            if (volEmail.equals(volEmailDB)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
