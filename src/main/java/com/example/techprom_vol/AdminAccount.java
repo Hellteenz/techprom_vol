@@ -70,13 +70,14 @@ public class AdminAccount extends Constants {
     @FXML private TableView<EventForm> table_eventActive;
     @FXML private TableColumn<EventForm, String> column_eventA;
 
-    public String currentEvent;
+    public static String currentEvent;
     public String eventName;
+    public static String status;
     public int minAge;
     public String info;
     public int firstStaff;
     public int secondStaff;
-    public String currentVolName;
+    public static String currentVolName;
 
 
     private ObservableList<User> volDataAllVol = FXCollections.observableArrayList();
@@ -103,6 +104,12 @@ public class AdminAccount extends Constants {
         else if (actionEvent.getSource() == btn_updateActiveEvent) {
             for ( int i = 0; i < table_eventActive.getItems().size(); i++) {
                 table_eventActive.getItems().clear();
+            }
+            for ( int i = 0; i < table_firstStaff.getItems().size(); i++) {
+                table_firstStaff.getItems().clear();
+            }
+            for ( int i = 0; i < table_secondStaff.getItems().size(); i++) {
+                table_secondStaff.getItems().clear();
             }
             DatabaseHandler databaseHandler = new DatabaseHandler();
             makeTableActiveEvent();
@@ -150,7 +157,7 @@ public class AdminAccount extends Constants {
                 throw new RuntimeException(e);
             }
             default_pane.toFront();
-        } else if (actionEvent.getSource() == changeFS_btn) {
+        } else if (actionEvent.getSource() == changeFS_btn || actionEvent.getSource() == changeSS_btn) {
             btnReactionOnListener();
         }
     }
@@ -291,8 +298,8 @@ public class AdminAccount extends Constants {
         while (resultSet.next()) {
             email = resultSet.getString(Constants.USERS_LOGIN_EMAIL);
         }
-        String status = getStatus(currentEvent, email, databaseHandler);
-        UpdateStaffTable updateStaffTable = new UpdateStaffTable(currentVolName, status);
+        status = getStatus(currentEvent, email, databaseHandler);
+        UpdateStaffTable updateStaffTable = new UpdateStaffTable();
         updateStaffTable.createTable();
     }
 
@@ -334,4 +341,7 @@ public class AdminAccount extends Constants {
         return emails;
     }
 
+    public String getCurrentEvent() {
+        return currentEvent;
+    }
 }
