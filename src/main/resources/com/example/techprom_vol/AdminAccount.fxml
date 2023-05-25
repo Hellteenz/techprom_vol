@@ -62,23 +62,6 @@
                   <Button fx:id="btn_table_update" layoutX="259.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="145.0" text="Обновить" />
                </children>
             </Pane>
-            <Pane fx:id="default_pane" layoutX="145.0" layoutY="-1.0" prefHeight="504.0" prefWidth="663.0" style="-fx-background-color: #FFF0F5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-6.0">
-               <effect>
-                  <DropShadow />
-               </effect>
-               <children>
-                  <Label layoutX="123.0" layoutY="123.0" text="Добро пожаловать!">
-                     <font>
-                        <Font name="Century" size="47.0" />
-                     </font>
-                  </Label>
-                  <ImageView fitHeight="214.0" fitWidth="245.0" layoutX="205.0" layoutY="222.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="file:/C:/Users/krist_eol1x01/IdeaProjects/techprom_vol/src/image/kitten.jpg" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
             <Pane fx:id="pane_createNewEvent" layoutX="146.0" prefHeight="504.0" prefWidth="655.0" style="-fx-background-color: #FFFAF0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="146.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <effect>
                   <DropShadow />
@@ -162,6 +145,23 @@
                   <Button fx:id="changeSS_btn" layoutX="507.0" layoutY="312.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="114.0" text="Редактировать" />
                   <Pane fx:id="changeFS_pane" layoutX="487.0" layoutY="12.0" prefHeight="38.0" prefWidth="158.0" style="-fx-background-color: #FFF0F5;" />
                   <Pane fx:id="changeSS_pane" layoutX="487.0" layoutY="306.0" prefHeight="34.0" prefWidth="147.0" style="-fx-background-color: #FFF0F5;" />
+               </children>
+            </Pane>
+            <Pane fx:id="default_pane" layoutX="145.0" layoutY="-1.0" prefHeight="504.0" prefWidth="663.0" style="-fx-background-color: #FFF0F5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-6.0">
+               <effect>
+                  <DropShadow />
+               </effect>
+               <children>
+                  <Label layoutX="123.0" layoutY="123.0" text="Добро пожаловать!">
+                     <font>
+                        <Font name="Century" size="47.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="214.0" fitWidth="245.0" layoutX="205.0" layoutY="222.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="file:/C:/Users/krist_eol1x01/IdeaProjects/techprom_vol/src/image/kitten.jpg" />
+                     </image>
+                  </ImageView>
                </children>
             </Pane>
             </children>
